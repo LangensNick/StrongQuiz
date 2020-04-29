@@ -1,5 +1,5 @@
 ﻿
-@model ICollection<StrongQuiz.Models.Models.UserScore>
+@model ICollection<StrongQuiz.Models.ViewModel.Leaderboard_VM>
 
 
 @{ 
@@ -11,7 +11,7 @@
             @counter
         </td>
         <td>
-            @scoreQuiz.ApplicationUser.FirstName @scoreQuiz.ApplicationUser.LastName
+            @scoreQuiz.Username
         </td>
         <td>
             @scoreQuiz.Score / @scoreQuiz.MaxScore

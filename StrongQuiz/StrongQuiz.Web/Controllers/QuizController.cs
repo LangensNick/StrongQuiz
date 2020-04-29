@@ -55,8 +55,27 @@ namespace StrongQuiz.Web.Controllers
         [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> Leaderboard(string QuizId)
         {
-            var leaderboard = await userScoreRepo.GetUserScoreWithUserAsync(Guid.Parse(QuizId));
-            return View("Leaderboard", leaderboard);
+            IEnumerable<UserScore> leaderboard = await userScoreRepo.GetUserScoreWithUserAsync(Guid.Parse(QuizId));
+            List<Leaderboard_VM> leaderboard_VMs = new List<Leaderboard_VM>();
+
+            foreach(var item in leaderboard)
+            {
+                var users = userManager.Users.Where(x => x.Id == item.ApplicationUserId);
+                var username = "";
+                foreach(var user in users)
+                {
+                    username = user.UserName;
+                }
+                Leaderboard_VM leaderboard_VM = new Leaderboard_VM()
+                {
+                    Username = username,
+                    Score = item.Score,
+                    MaxScore = item.MaxScore
+                };
+                leaderboard_VMs.Add(leaderboard_VM);
+
+            }
+            return View("Leaderboard", leaderboard_VMs);
         }
 
         [Authorize(Roles = "Admin,User")]

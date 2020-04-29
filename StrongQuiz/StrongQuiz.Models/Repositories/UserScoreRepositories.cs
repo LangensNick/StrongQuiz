@@ -31,7 +31,27 @@ namespace StrongQuiz.Models.Repositories
             return number;
         }
 
-        public async Task<IEnumerable<UserScore>> GetUserScoreWithUserAsync(Guid quizId) => await _context.UserScores.Include(p => p.ApplicationUser).Where(p => p.QuizId == quizId).OrderByDescending(p => p.Score).Take(10).ToListAsync();
+        public async Task<IEnumerable<UserScore>> GetUserScoreWithUserAsync(Guid quizId)
+        {
+            var result = await _context.UserScores.Include(e => e.ApplicationUser)
+                            .GroupBy(e => new { e.QuizId, e.ApplicationUserId, e.MaxScore})
+                            .Select(e => new {Score = e.Max(x=> x.Score), User = e.Key.ApplicationUserId, maxScore = e.Key.MaxScore})
+                            .OrderByDescending(e => e.Score)
+                            .ToDictionaryAsync(e => new UserScore { Score = e.Score, ApplicationUserId = e.User, MaxScore = e.maxScore});
+            List<UserScore> userScores = new List<UserScore>();
+            foreach (var item in result)
+            {
+                UserScore userScore = new UserScore()
+                {
+                    ApplicationUserId = item.Value.User,
+                    Score = item.Value.Score,
+                    MaxScore = item.Value.maxScore
+                };
+                userScores.Add(userScore);
+            }
+            //await _context.UserScores.Include(p => p.ApplicationUser).Where(p => p.QuizId == quizId).OrderByDescending(p => p.Score).Take(10).ToListAsync()
+            return userScores;
+        }
 
         public async Task<UserScore> Add(UserScore userScore)
         {
