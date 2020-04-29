@@ -1,0 +1,33 @@
+﻿@model ICollection<StrongQuiz.Models.Models.Quiz>
+@{
+    ViewData["Title"] = "MyQuiz";
+}
+
+<h1>MyQuiz</h1>
+<section class="details-card">
+    <div class="container">
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card-content">
+                        <div class="card-img">
+                            <img src="@item.ImageUrl" alt="">
+                            <span><h4>New!</h4></span>
+                        </div>
+                        <div class="card-desc">
+                            <h3>@item.Name</h3>
+                            <p>
+                                @item.Description
+                            </p>
+                            <a asp-action="Participate" asp-route-QuizId="@item.Id" class="btn-card" asp->Start</a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+
+             
+        </div>
+    </div>
+</section>

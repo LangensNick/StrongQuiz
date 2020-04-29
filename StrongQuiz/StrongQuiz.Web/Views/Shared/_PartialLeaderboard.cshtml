@@ -1,0 +1,25 @@
+﻿
+@model ICollection<StrongQuiz.Models.Models.UserScore>
+
+
+@{ 
+    int counter = 1;
+    foreach(var scoreQuiz in Model)
+    {
+    <tr>
+        <td>
+            @counter
+        </td>
+        <td>
+            @scoreQuiz.ApplicationUser.FirstName @scoreQuiz.ApplicationUser.LastName
+        </td>
+        <td>
+            @scoreQuiz.Score / @scoreQuiz.MaxScore
+        </td>
+    </tr>
+    counter++;
+    }
+
+
+
+}

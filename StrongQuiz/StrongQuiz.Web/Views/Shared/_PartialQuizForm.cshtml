@@ -1,0 +1,165 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model ICollection<StrongQuiz.Models.Models.Question>
+
+
+@{
+    var correctclass = "";
+    var questionCounter = 0;
+    @foreach (var question in Model)
+    {
+        
+        if (questionCounter == 0)
+        {
+            <input asp-for="@question.QuestionID" value="@question.QuestionID" style="display:none;" />
+            <img src="@question.ImageUrl" style=" width: 45em;height: 22em;" id="question_@questionCounter" alt="">
+            <p id="question_@questionCounter" style="font-size:2em;">@question.QuestionName</p>
+            <div class="button-grp" id="question_@questionCounter">
+                @{
+                    int answercounter = 0;
+                    @foreach (var answers in question.Answers)
+                    {
+                        if (question.modify == false & answers.Correct == Answer.State.correct)
+                        {
+                            correctclass = "correct";
+                        }
+                        else if(question.modify == false & answers.Correct == Answer.State.incorrect & answers.selected == true)
+                        {
+                            correctclass = "incorrect";
+                        }
+                        else
+                        {
+                            correctclass = "";
+                        }
+                        switch (answercounter)
+                        {
+                            case 0:
+                                if (question.modify)
+                                {
+                                    <div class="question-option"><input asp-for="@answers.AnswerName" class="option" style="display:none" value="@answers.AnswerName" name="@question.QuestionID" id="@answers.AnswerId" type="radio" /><label id="btn0" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                else
+                                {
+                                    <div class="question-option"><label id="btn0" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                break;
+                            case 1:
+                                if (question.modify)
+                                {
+                                    <div class="question-option"><input asp-for="@answers.AnswerName" class="option" style="display:none" value="@answers.AnswerName" name="@question.QuestionID" id="@answers.AnswerId" type="radio"><label id="btn1" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                else
+                                {
+                                    <div class="question-option"><label id="btn1" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                break;
+                            case 2:
+                                if (question.modify)
+                                {
+                                    <div class="question-option"><input asp-for="@answers.AnswerName" class="option" style="display:none" value="@answers.AnswerName" name="@question.QuestionID" id="@answers.AnswerId" type="radio"><label id="btn2" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                else
+                                {
+                                    <div class="question-option"><label id="btn2" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+
+                                }
+                                break;
+                            case 3:
+                                if (question.modify)
+                                {
+                                    <div class="question-option"><input asp-for="@answers.AnswerName" class="option" style="display:none" value="@answers.AnswerName" name="@question.QuestionID" id="@answers.AnswerId" type="radio"><label id="btn3" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                else
+                                {
+                                    <div class="question-option"><label id="btn3" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                break;
+
+                        }
+                        answercounter++;
+                    }
+                }
+
+            </div>
+        }
+        else
+        {
+            <input asp-for="@question.QuestionID" value="@question.QuestionID" class="hide" />
+            <img src="@question.ImageUrl" id="question_@questionCounter" style=" width: 45em;height: 22em;" id="question_@questionCounter" class="hide" alt="">
+
+            <p id="question_@questionCounter" style="font-size:2em;" class="hide">@question.QuestionName</p>
+            <div class="button-grp hide" id="question_@questionCounter">
+                @{
+                    int answercounter = 0;
+                    @foreach (var answers in question.Answers)
+                    {
+                        if (question.modify == false & answers.Correct == Answer.State.correct)
+                        {
+                            correctclass = "correct";
+                        }
+                        else if(question.modify == false & answers.Correct == Answer.State.incorrect & answers.selected == true)
+                        {
+                            correctclass = "incorrect";
+                        }
+                        else
+                        {
+                            correctclass = "";
+                        }
+                        switch (answercounter)
+                        {
+                            case 0:
+                                if (question.modify)
+                                {
+                                    <div class="question-option"><input asp-for="@answers.AnswerName" class="option" style="display:none" value="@answers.AnswerName" name="@question.QuestionID" id="@answers.AnswerId" type="radio" /><label id="btn0" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                else
+                                {
+                                    <div class="question-option"><label id="btn0" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                break;
+                            case 1:
+                                if (question.modify)
+                                {
+                                    <div class="question-option"><input asp-for="@answers.AnswerName" class="option" style="display:none" value="@answers.AnswerName" name="@question.QuestionID" id="@answers.AnswerId" type="radio"><label id="btn1" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                else
+                                {
+                                    <div class="question-option"><label id="btn1" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                break;
+                            case 2:
+                                if (question.modify)
+                                {
+                                    <div class="question-option"><input asp-for="@answers.AnswerName" class="option" style="display:none" value="@answers.AnswerName" name="@question.QuestionID" id="@answers.AnswerId" type="radio"><label id="btn2" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                else
+                                {
+                                    <div class="question-option"><label id="btn2" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+
+                                }
+                                break;
+                            case 3:
+                                if (question.modify)
+                                {
+                                    <div class="question-option"><input asp-for="@answers.AnswerName" class="option" style="display:none" value="@answers.AnswerName" name="@question.QuestionID" id="@answers.AnswerId" type="radio"><label id="btn3" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                else
+                                {
+                                    <div class="question-option"><label id="btn3" class="@answers.AnswerId @correctclass" for="@answers.AnswerId">@answers.AnswerName</label></div>
+                                }
+                                break;
+
+                        }
+                        answercounter = 0;
+                    }
+                }
+            </div>
+
+        }
+
+
+        questionCounter++;
+
+    }
+}

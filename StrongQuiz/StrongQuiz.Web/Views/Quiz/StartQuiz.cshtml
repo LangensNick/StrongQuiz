@@ -1,0 +1,24 @@
+﻿@model  StrongQuiz.Models.Models.Quiz
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+    <div class="containers quiz">
+        <div class="container-quiz" id="quiz">
+            <h1>Quiz</h1>
+            <form asp-action="SubmitQuiz">
+                <input value="@Model.Id" asp-for="@Model.Id" style="display:none;" />
+                <hr style="margin-bottom: 20px">
+
+                <partial name="~/Views/Shared/_PartialQuizForm.cshtml" model="@Model.Questions" />
+
+                <hr style="margin-top: 50px">
+                <div id="btnnext" data-count="@Model.Questions.Count" class="next">next</div>
+                <input id="btnsubmit" type="submit" value="submit" class="hide next" />
+            </form>
+                <footer>
+                    <p id="progress">Question <span id="questionCounter">1</span> of @Model.Questions.Count</p>
+                </footer>
+</div>
+    </div>
+

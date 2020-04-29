@@ -1,0 +1,315 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+    color: #0366d6;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+.p-score {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 5em;
+}
+}
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+.footer {
+    position: absolute;
+    display:none;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+}
+/* card details start  */
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,400i,500,500i,600,600i,700,700i,800,800i,900,900i|Roboto+Condensed:400,400i,700,700i');
+
+section {
+    padding: 100px 0 !important;
+}
+
+.details-card {
+    background: #ecf0f1 !important;
+}
+
+.card-content {
+    background: #ffffff !important;
+    border: 4px !important;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12) !important;
+}
+
+.card-img {
+    position: relative !important;
+    overflow: hidden !important;
+    border-radius: 0 !important;
+    z-index: 1 !important;
+}
+
+    .card-img img {
+        width: 100% !important;
+        height: auto !important;
+        display: block !important;
+    }
+
+    .card-img span {
+        position: absolute !important;
+        top: 15% !important;
+        left: 12% !important;
+        background: #1ABC9C !important;
+        padding: 6px !important;
+        color: #fff !important;
+        font-size: 12px !important;
+        border-radius: 4px !important;
+        -webkit-border-radius: 4px !important;
+        -moz-border-radius: 4px !important;
+        -ms-border-radius: 4px !important;
+        -o-border-radius: 4px !important;
+        transform: translate(-50%,-50%) !important;
+    }
+
+        .card-img span h4 {
+            font-size: 12px !important;
+            margin: 0 !important;
+            padding: 10px 5px !important;
+            line-height: 0 !important;
+        }
+
+.card-desc {
+    padding: 1.25rem !important;
+}
+
+    .card-desc h3 {
+        color: #000000 !important;
+        font-weight: 600 !important;
+        font-size: 1.5em !important;
+        line-height: 1.3em !important;
+        margin-top: 0 !important;
+        margin-bottom: 5px !important;
+        padding: 0 !important;
+    }
+
+    .card-desc p {
+        color: #747373 !important;
+        font-size: 14px !important;
+        font-weight: 400 !important;
+        font-size: 1em !important;
+        line-height: 1.5 !important;
+        margin: 0px !important;
+        margin-bottom: 20px !important;
+        padding: 0 !important;
+        font-family: 'Raleway', sans-serif !important;
+    }
+
+.btn-card {
+    background-color: #1ABC9C !important;
+    color: #fff !important;
+    box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12) !important;
+    padding: .84rem 2.14rem !important;
+    font-size: .81rem !important;
+    -webkit-transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,-webkit-box-shadow .15s ease-in-out !important;
+    -o-transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out,-webkit-box-shadow .15s ease-in-out !important;
+    margin: 0 !important;
+    border: 0 !important;
+    -webkit-border-radius: .125rem !important;
+    border-radius: .125rem !important;
+    cursor: pointer !important;
+    text-transform: uppercase !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    color: #fff !important;
+}
+
+    .btn-card:hover {
+        background: orange !important;
+    }
+
+a.btn-card {
+    text-decoration: none !important;
+    color: #fff !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+.containers {
+    width: 600px;
+    height: 500px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 10px 50px 50px 50px;
+    border-radius: 50px;
+    border: 2px solid #cbcbcb;
+    box-shadow: 10px 15px 5px #cbcbcb;
+}
+.quiz{
+    display:contents;
+}
+.container-quiz{
+    text-align:center;
+}
+.containers h1 {
+    background: #405CA1;
+    color: #fff;
+    font-size: 60px;
+    text-align: center;
+    padding: 2px 0 13px 0;
+    border-radius: 50px;
+}
+
+#question {
+    font-size: 30px;
+    color: #5a6772;
+}
+
+.button-grp {
+    margin-top: 30px;
+    display: flex;
+    margin: auto;
+    flex-wrap: wrap;
+}
+
+#btn0, #btn1, #btn2, #btn3, #btnnext, #btnsubmit {
+    background: #405CA1;
+    width: 45%;
+    font-size: 20px;
+    border: 1px solid #1d3c6a;
+    border-radius: 50px;
+    margin: 0 !important;
+    width: 80%;
+    margin: 10px;
+    padding: 10px 10px;
+    color: #fff;
+}
+
+    #btn0:hover, #btn1:hover, #btn2:hover, #btn3:hover, #btnnext:hover, #btnsubmit:hover {
+        cursor: pointer;
+        background: #2D85A4; /*come here*/
+    }
+
+    #btn0:focus, #btn1:focus, #btn2:focus, #btn3:focus, #btnnext:focus, #btnsubmit:focus {
+        outline: 0;
+    }
+
+#progress {
+    color: #2b2b2b;
+    font-size: 18px;
+}
+
+.hide {
+    display: none;
+}
+
+.next {
+    width: 20% !important;
+    float: right;
+    text-align: center;
+}
+
+.question-option {
+    width: 50%;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+input:checked + label {
+    background: #2D85A4 !important;
+}
+.correct {
+    background: green !important;
+}
+.incorrect{
+    background: red !important;
+}
+
+.avatar {
+    vertical-align: middle;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 1em;
+}
+
+.table {
+    margin-top: 20px;
+}
+
+    .table thead {
+        background: #111;
+        color: #fff;
+    }
+
+    .table tr th, .table tr td:nth-child(odd) {
+        text-align: center;
+    }
+
+tr:nth-child(even) {
+    background: rgba(242,242,242,0.5) !important;
+}

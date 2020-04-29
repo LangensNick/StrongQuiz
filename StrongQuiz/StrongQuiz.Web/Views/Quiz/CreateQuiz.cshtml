@@ -1,0 +1,62 @@
+﻿@model StrongQuiz.Models.Models.Quiz
+
+<h4>Quiz</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateQuiz" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuestionCount" class="control-label">How many Questions are needed?</label>
+                <input asp-for="QuestionCount" type="number" class="form-control" />
+                <span asp-validation-for="QuestionCount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label">image</label>
+                <input name="image1" type="file" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="Difficulty" class="control-label">How many Questions are needed?</label>
+                <select asp-for="Difficulty" asp-items="Html.GetEnumSelectList<Quiz.Difficulties>()">
+                    <option>-- Is de vraag correct --</option>
+                </select>
+                <span asp-validation-for="QuestionCount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+
+                @Html.TextArea("Description", null, new { @class = "form-control" })
+                <span asp-validation-for="Description" class="text-danger"></span>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="Above75Quote" class="control-label">Comment when user scores above 75%</label>
+                <input asp-for="Above75Quote" type="text" class="form-control" />
+                <span asp-validation-for="Above75Quote" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Below75Quote" class="control-label">Comment when user scores below 75%</label>
+                <input asp-for="Below75Quote" type="text" class="form-control" />
+                <span asp-validation-for="Below75Quote" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Below50Quote" class="control-label">Comment when user scores below 50%</label>
+                <input asp-for="Below50Quote" type="text" class="form-control" />
+                <span asp-validation-for="Below50Quote" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Next" class="btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

@@ -1,0 +1,69 @@
+﻿@model ICollection<StrongQuiz.Models.Models.Question>
+@{
+    var counter = 0;
+}
+<h4>Question</h4>
+<hr />
+<div class="row">
+    <form asp-action="AddQuestionToQuiz" enctype="multipart/form-data">   
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @foreach (var item in Model)
+        {
+            <input type="type" asp-for="@item.Quiz" name="name" hidden value="@ViewBag.QuizId" />
+
+            <div class="container mb-5">
+                <div class="row">
+
+                    <div class="w-100 ml-3">
+                        <label asp-for="@item.QuestionName" class="control-label"></label>
+                        <input asp-for="@item.QuestionName" class="form-control" />
+                        <span asp-validation-for="@item.QuestionName" class="text-danger"></span>
+                    </div>
+                    <div class="w-100 ml-3">
+                        <label asp-for="@item.QuestionName" class="control-label"></label>
+                        <input name="questionImage" type="file"value="@(item.QuestionName + ".jpg")" data-guid="@item.QuestionID" class="form-control questionImage " />
+                        <input name="imageav" id="@item.QuestionID"  type="text" style="display:none" value="0"/>
+                        <span asp-validation-for="@item.QuestionName" class="text-danger"></span>
+                    </div>
+                    @{
+                        foreach (var answer in item.Answers)
+                        {
+                            <div class="col">
+                                <label asp-for="@answer.AnswerName" class="control-label"></label>
+                                <input asp-for="@answer.AnswerName" class="form-control" />
+                                <span asp-validation-for="@answer.AnswerName" class="text-danger"></span>
+
+                                <select asp-for="@answer.Correct" asp-items="Html.GetEnumSelectList<Answer.State>()">
+                                    <option>-- Is de vraag correct --</option>
+                                </select>
+                                <span asp-validation-for="@answer.Correct" class="text-danger"></span>
+                            </div>
+                            if (counter == 1)
+                            {
+                                <div class="w-100"></div>
+                                counter++;
+                            }
+                            else
+                            {
+                                counter++;
+                            }
+
+                        }
+                        counter = 0;
+                    }
+                </div>
+
+            </div>
+        }
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+    </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

@@ -1,0 +1,30 @@
+﻿@model StrongQuiz.Models.ViewModel.ScorePage_VM
+@{ 
+    var test = "hallo";
+}
+
+
+<div class="container">
+    <p class="p-score" style="border:2px solid">@Model.Score / @Model.MaxScore</p>
+    <p class="p-score">
+        @Model.Comment</pclass="p-score">
+
+    <div class="containers quiz">
+        <div class="container-quiz" id="quiz">
+            <h1>Quiz</h1>
+            <form asp-action="SubmitQuiz">
+                <hr style="margin-bottom: 20px">
+
+                <partial name="~/Views/Shared/_PartialQuizForm.cshtml" model="@Model.questions" />
+
+                <hr style="margin-top: 50px">
+                <div id="btnnext" data-count="@Model.questions.Count" class="next">next</div>
+                <a  value="Leaderboard" class="hide next" />
+                <a asp-action="Leaderboard" id="btnsubmit" asp-route-QuizId="@Model.quizId" class="btn-card hide next">Leaderboard</a>
+            </form>
+            <footer>
+            <p id="progress">Question <span id="questionCounter">1</span> of @Model.questions.Count</p>
+                </footer>
+</div>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+﻿@model ICollection<StrongQuiz.Models.Models.UserScore>
+    <div class="container">
+        <table id="socreboard" class="table striped">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Username</th>
+                    <th>Score</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                <partial name="~/Views/Shared/_PartialLeaderboard.cshtml" model="@Model" />
+
+            </tbody>
+        </table>
+    </div>
