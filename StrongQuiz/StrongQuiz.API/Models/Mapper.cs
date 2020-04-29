@@ -18,26 +18,13 @@ namespace StrongQuiz.API.Models
             quiz_DTO.Difficulty = quiz.Difficulty.ToString();
             quiz_DTO.Name = quiz.Name;
             quiz_DTO.Description = quiz.Description;
-            List<List<string>> questions = new List<List<string>>();
+            List<string> questions = new List<string>();
             foreach(var item in quiz.Questions)
             {
-                List<string> question = new List<string>();
-                question.Add(item.QuestionName);
-                List<string> answers = new List<string>();
-                foreach(var itemAnswer in item.Answers)
-                {
-                    List<string> answer = new List<string>();
-                    answer.Add(itemAnswer.AnswerName);
-                    if(itemAnswer.Correct == Answer.State.correct)
-                    {
-                        answer.Add("correct");
-                    }
-                   // answers.Add(answer);
-                }
+                
+                questions.Add(item.QuestionName);
 
             }
- //           quiz_DTO.Questions = questions;
-
             /*//uitvlakken van navigatieproperties + controleren op null
             if (edu.Roles != null && edu.Roles.Count > 0)
             {

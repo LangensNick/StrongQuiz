@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using StrongQuiz.Models.Repositories;
 using StrongQuiz.API.Models;
 using StrongQuiz.Models.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace StrongQuiz.API.Controllers
 {
@@ -16,7 +18,7 @@ namespace StrongQuiz.API.Controllers
     {
         private readonly IUserScoreRepositories userScoreRepo;
         private readonly IQuizRepository quizRepo;
-
+        private const string AuthSchemes = CookieAuthenticationDefaults.AuthenticationScheme + ",Identity.Application";
         public QuizController(IUserScoreRepositories userScoreRepositories, IQuizRepository quizRepository)
         {
             this.userScoreRepo = userScoreRepositories;
@@ -24,14 +26,15 @@ namespace StrongQuiz.API.Controllers
         }
         // GET: api/Quiz
         [HttpGet("taken/{guid}", Name = "GetTimesTakenByQuiz")]
-
+        [Authorize(AuthenticationSchemes = AuthSchemes, Roles = "Admin")]
         public async Task<int> GetTimesTakenByQuiz(string guid)
         {
             int result = await userScoreRepo.GetTimesTakenForEachQuiz(Guid.Parse(guid));
             return result;
         }
-        [HttpGet("{guid}", Name = "QuizById")]
 
+        [HttpGet("{guid}", Name = "QuizById")]
+        [Authorize(AuthenticationSchemes = AuthSchemes, Roles = "Admin")]
         public async Task<Quiz_DTO> QuizById(string guid)
         {
             Quiz_DTO quiz_DTO = new Quiz_DTO();
