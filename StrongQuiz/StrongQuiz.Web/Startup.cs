@@ -43,7 +43,7 @@ namespace StrongQuiz.Web
             services.AddControllersWithViews();
             services.AddAuthorization(options => { options.AddPolicy("SuperUsersRole", policy => policy.RequireRole("Administrator", "COördinator")); });
             services.AddRazorPages();
-            services.Configure<IdentityOptions>(options => { options.Password.RequiredLength = 8; options.User.RequireUniqueEmail = true; options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30); });
+            services.Configure<IdentityOptions>(options => { options.Password.RequiredLength = 8; options.User.RequireUniqueEmail = true; options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(120); });
             services.ConfigureApplicationCookie(options => { options.Cookie.HttpOnly = true; options.ExpireTimeSpan = TimeSpan.FromMinutes(30); });
         }
 

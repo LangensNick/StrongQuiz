@@ -104,37 +104,28 @@ namespace StrongQuiz.Web.Controllers
         // POST: Quiz/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateQuizAsync(IFormCollection collection, IFormFile image1)
+        public async Task<ActionResult> CreateQuizAsync(Quiz quiz, IFormCollection collection, IFormFile image1)
         {
-            try
+            if (ModelState.IsValid)
             {
+                try
+            {
+                Guid QuizQuid = Guid.NewGuid();
                 var uploadPath = Path.Combine(he.WebRootPath, "images");
-                if (image1.Length > 0)
+                if(image1 != null)
                 {
-                    var filePath = Path.Combine(uploadPath, collection["Name"] + ".jpg");
-                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    if (image1.Length > 0)
                     {
-                        await image1.CopyToAsync(fileStream);
+                        var filePath = Path.Combine(uploadPath, QuizQuid.ToString() + ".jpg");
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await image1.CopyToAsync(fileStream);
+                        }
                     }
                 }
-                // TODO: Add insert logic here
-                Quiz quiz = new Quiz() {Id = Guid.NewGuid(), Name = collection["Name"], Description = collection["Description"], QuestionCount = Int32.Parse(collection["QuestionCount"]), Above75Quote = collection["Above75Quote"], Below75Quote = collection["Below75Quote"], Below50Quote = collection["Below50Quote"] };
-                switch (Int16.Parse(collection["Difficulty"]))
-                {
-                    case 0:
-                        quiz.Difficulty = Quiz.Difficulties.beginner;
-                        break;
-                    case 1:
-                        quiz.Difficulty = Quiz.Difficulties.advanced;
-                        break;
-                    case 2:
-                        quiz.Difficulty = Quiz.Difficulties.professional;
-                        break;
-                    default:
-                        break;
-                }
+                quiz.Id = QuizQuid;
                 await quizRepository.Add(quiz);
-                ICollection<Question> questions = new List<Question>();
+                IList<Question> questions = new List<Question>();
                 for (var i = 0; i < quiz.QuestionCount; i++)
                 {
                     List<Answer> answers = new List<Answer>();
@@ -148,6 +139,7 @@ namespace StrongQuiz.Web.Controllers
 
                     questions.Add(question1);
                 }
+                
                 ViewBag.QuizId = quiz.Id;
                 return View("AddQuestionToQuiz", questions);
             }
@@ -156,41 +148,31 @@ namespace StrongQuiz.Web.Controllers
                 return View();
             }
         }
+            else
+            {
+                return View();
+            }
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddQuestionToQuiz(IFormCollection collection, List<IFormFile> questionImage,List<string> imageav)
+        public async Task<ActionResult> AddQuestionToQuiz(ICollection<Question> questions, IFormCollection collection, List<IFormFile> questionImage,List<string> imageav)
         {
             try
             {
-                var uploadPath = Path.Combine(he.WebRootPath, "images");
                 int imageCounter = 0;
-                // TODO: Add insert logic here
-                for (var i = 0; i < collection["name"].Count(); i++)
+                int i = 0;
+                var uploadPath = Path.Combine(he.WebRootPath, "images");
+                foreach (var question in questions)
                 {
-                    List<Answer> answers = new List<Answer>();
-                    for (var j = 0; j < 4; j++)
-                    {
-                        var name = collection["item.QuestionName"];
-                        int index = j + (i * 4);
-                        if (Int32.Parse(collection["answer.Correct"][index]) == 1)
-                        {
-                            Answer newanswer = new Answer() { AnswerId = Guid.NewGuid(), AnswerName = collection["answer.AnswerName"][index], Correct = Answer.State.correct };
-                            answers.Add(newanswer);
-                        }
-                        else
-                        {
-                            Answer newanswer = new Answer() { AnswerId = Guid.NewGuid(), AnswerName = collection["answer.AnswerName"][index], Correct = Answer.State.incorrect };
-                            answers.Add(newanswer);
-                        }
-                    }
-                    var value = collection["name"][0];
+                    await questionRepository.Add(question);
                     Guid QuestionGuid = Guid.NewGuid();
                     if (Int16.Parse(imageav[i]) == 1)
                     {
                         if (questionImage[imageCounter].Length > 0)
                         {
-                            var filePath = Path.Combine(uploadPath, QuestionGuid + ".jpg");
+                            var filePath = Path.Combine(uploadPath, question.QuestionID + ".jpg");
                             using (var fileStream = new FileStream(filePath, FileMode.Create))
                             {
                                 await questionImage[imageCounter].CopyToAsync(fileStream);
@@ -199,14 +181,8 @@ namespace StrongQuiz.Web.Controllers
                         imageCounter++;
 
                     }
-
-                        Question newquestion = new Question() { QuestionID = QuestionGuid, QuestionName = collection["item.QuestionName"][i], Answers = answers, QuizId = Guid.Parse(value) };
-                    await questionRepository.Add(newquestion);
-
-
-
+                    i++;
                 }
-                
                 var quizzes = await quizRepository.GetQuizzesAsync();
                 return View("MyQuiz",quizzes);
             }
@@ -218,7 +194,7 @@ namespace StrongQuiz.Web.Controllers
         // GET: Quiz/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SubmitQuiz(IFormCollection collection, ICollection<Question> questions)
+        public async Task<ActionResult> SubmitQuiz(ICollection<Question> questions,IFormCollection collection)
         {
             var user = userManager.FindByNameAsync(User.Identity.Name).Result;
             List<Question> Correction = new List<Question>();

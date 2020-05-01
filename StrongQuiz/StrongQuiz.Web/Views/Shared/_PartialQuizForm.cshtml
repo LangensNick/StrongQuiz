@@ -14,7 +14,7 @@
         {
             <input asp-for="@question.QuestionID" value="@question.QuestionID" style="display:none;" />
             <img src="@question.ImageUrl" style=" width: 45em;height: 22em;" id="question_@questionCounter" alt="">
-            <p id="question_@questionCounter" style="font-size:2em;">@question.QuestionName</p>
+            <p id="question_@questionCounter" style="font-size:2em; color:white;">@question.QuestionName</p>
             <div class="button-grp" id="question_@questionCounter">
                 @{
                     int answercounter = 0;
@@ -88,7 +88,7 @@
             <input asp-for="@question.QuestionID" value="@question.QuestionID" class="hide" />
             <img src="@question.ImageUrl" id="question_@questionCounter" style=" width: 45em;height: 22em;" id="question_@questionCounter" class="hide" alt="">
 
-            <p id="question_@questionCounter" style="font-size:2em;" class="hide">@question.QuestionName</p>
+            <p id="question_@questionCounter" style="font-size:2em;color:white;" class="hide">@question.QuestionName</p>
             <div class="button-grp hide" id="question_@questionCounter">
                 @{
                     int answercounter = 0;

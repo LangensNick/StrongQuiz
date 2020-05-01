@@ -1,43 +1,47 @@
-﻿@model ICollection<StrongQuiz.Models.Models.Question>
+﻿@model IList<StrongQuiz.Models.Models.Question>
 @{
     var counter = 0;
 }
 <h4>Question</h4>
 <hr />
 <div class="row">
-    <form asp-action="AddQuestionToQuiz" enctype="multipart/form-data">   
+    <form asp-action="AddQuestionToQuiz" enctype="multipart/form-data">
 
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        @foreach (var item in Model)
+        @for (var index = 0; index < Model.Count; index++)
         {
-            <input type="type" asp-for="@item.Quiz" name="name" hidden value="@ViewBag.QuizId" />
+            <input asp-for="@Model[index].QuizId" style="display:none;" value="@ViewBag.QuizId" />
+            <input asp-for="@Model[index].QuestionID" style="display:none;" value="@Model[index].QuestionID" />
 
             <div class="container mb-5">
                 <div class="row">
 
                     <div class="w-100 ml-3">
-                        <label asp-for="@item.QuestionName" class="control-label"></label>
-                        <input asp-for="@item.QuestionName" class="form-control" />
-                        <span asp-validation-for="@item.QuestionName" class="text-danger"></span>
+                        <label asp-for="@Model[index].QuestionName" class="control-label"></label>
+                        <input asp-for="@Model[index].QuestionName" class="form-control" />
+                        <span asp-validation-for="@Model[index].QuestionName" class="text-danger"></span>
                     </div>
                     <div class="w-100 ml-3">
-                        <label asp-for="@item.QuestionName" class="control-label"></label>
-                        <input name="questionImage" type="file"value="@(item.QuestionName + ".jpg")" data-guid="@item.QuestionID" class="form-control questionImage " />
-                        <input name="imageav" id="@item.QuestionID"  type="text" style="display:none" value="0"/>
-                        <span asp-validation-for="@item.QuestionName" class="text-danger"></span>
+                        <label asp-for="@Model[index].QuestionName" class="control-label"></label>
+                        <input name="questionImage" type="file" data-guid="@Model[index].QuestionID" class="form-control questionImage " />
+                        <input name="imageav" id="@Model[index].QuestionID" type="text" style="display:none" value="0" />
+                        <span asp-validation-for="@Model[index].QuestionName" class="text-danger"></span>
                     </div>
                     @{
-                        foreach (var answer in item.Answers)
+                        for (var answerindex = 0; answerindex < @Model[index].Answers.Count; answerindex++)
                         {
                             <div class="col">
-                                <label asp-for="@answer.AnswerName" class="control-label"></label>
-                                <input asp-for="@answer.AnswerName" class="form-control" />
-                                <span asp-validation-for="@answer.AnswerName" class="text-danger"></span>
+                                <label class="control-label">Answer</label>
+                                <input asp-for="@Model[index].Answers[answerindex].AnswerId" value="@Guid.NewGuid()" style="display:none;" />
+                                <input asp-for="@Model[index].Answers[answerindex].QuestionId" value="@Model[index].QuestionID" style="display:none;" />
+                                <input asp-for="@Model[index].Answers[answerindex].AnswerName" class="form-control" />
+                                <input asp-for="@Model[index].Answers[answerindex].QuestionId" style="display:none" value="@Model[index].QuestionID" />
+                                <span asp-validation-for="@Model[index].Answers[answerindex].AnswerName" class="text-danger"></span>
 
-                                <select asp-for="@answer.Correct" asp-items="Html.GetEnumSelectList<Answer.State>()">
+                                <select asp-for="@Model[index].Answers[answerindex].Correct" asp-items="Html.GetEnumSelectList<Answer.State>()">
                                     <option>-- Is de vraag correct --</option>
                                 </select>
-                                <span asp-validation-for="@answer.Correct" class="text-danger"></span>
+                                <span asp-validation-for="@Model[index].Answers[answerindex].Correct" class="text-danger"></span>
                             </div>
                             if (counter == 1)
                             {
@@ -55,12 +59,15 @@
                 </div>
 
             </div>
+
         }
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
     </form>
-    </div>
+
+
+</div>
 </div>
 
 <div>

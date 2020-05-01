@@ -20,7 +20,7 @@ namespace StrongQuiz.Models.Models
         [NotMapped]
         public bool modify { get; set; } = false;
         public Guid QuizId { get; set; }
-        public virtual ICollection<Answer> Answers { get; set; }
+        public virtual IList<Answer> Answers { get; set; }
         public virtual Quiz Quiz { get; set; }
     }
 }

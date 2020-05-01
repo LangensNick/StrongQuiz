@@ -35,7 +35,7 @@ namespace StrongQuiz.Models.Repositories
         {
             var result = await _context.UserScores.Include(e => e.ApplicationUser)
                             .GroupBy(e => new { e.QuizId, e.ApplicationUserId, e.MaxScore})
-                            .Select(e => new {Score = e.Max(x=> x.Score), User = e.Key.ApplicationUserId, maxScore = e.Key.MaxScore})
+                            .Select(e => new {Score = e.Max(x=> x.Score), User = e.Key.ApplicationUserId, maxScore = e.Key.MaxScore, quiz = e.Key.QuizId}).Where(e => e.quiz == quizId)
                             .OrderByDescending(e => e.Score)
                             .ToDictionaryAsync(e => new UserScore { Score = e.Score, ApplicationUserId = e.User, MaxScore = e.maxScore});
             List<UserScore> userScores = new List<UserScore>();
