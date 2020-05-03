@@ -18,49 +18,108 @@ namespace StrongQuiz.API.Controllers
     {
         private readonly IUserScoreRepositories userScoreRepo;
         private readonly IQuizRepository quizRepo;
+        private readonly IQuestionRepository questionRepo;
+        private readonly IAnswerRepository answerRepository;
         private const string AuthSchemes = CookieAuthenticationDefaults.AuthenticationScheme + ",Identity.Application";
-        public QuizController(IUserScoreRepositories userScoreRepositories, IQuizRepository quizRepository)
+        public QuizController(IUserScoreRepositories userScoreRepositories, IQuizRepository quizRepository, IQuestionRepository questionRepo
+            , IAnswerRepository answerRepository)
         {
             this.userScoreRepo = userScoreRepositories;
             this.quizRepo = quizRepository;
+            this.questionRepo = questionRepo;
+            this.answerRepository = answerRepository;
         }
         // GET: api/Quiz
         [HttpGet("taken/{guid}", Name = "GetTimesTakenByQuiz")]
         [Authorize(AuthenticationSchemes = AuthSchemes, Roles = "Admin")]
-        public async Task<int> GetTimesTakenByQuiz(string guid)
+        public async Task<ActionResult<int>> GetTimesTakenByQuiz(string guid)
         {
-            int result = await userScoreRepo.GetTimesTakenForEachQuiz(Guid.Parse(guid));
-            return result;
+            try
+            {
+                int result = await userScoreRepo.GetTimesTakenForEachQuiz(Guid.Parse(guid));
+                if (result == null)
+                {
+                    return NotFound();
+                }
+                
+                return Ok(result);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Wrong id");
+                throw;
+            }
+            
+        }
+        [HttpGet("question/{guid}", Name = "QuestionById")]
+        [Authorize(AuthenticationSchemes = AuthSchemes, Roles = "Admin")]
+        public async Task<ActionResult<Question_DTO>> QuestionById(string guid)
+        {
+            try
+            {
+                Question question = await questionRepo.GetQuestionsAndAnswersAsync(Guid.Parse(guid));
+                Question_DTO question_DTO = new Question_DTO();
+                if (question == null)
+                {
+                    return NotFound();
+                }
+                question_DTO = Mapper.ConvertTo_DTO(question, ref question_DTO);
+                return question_DTO;
+            }
+            catch (Exception ex)
+            {
+                return BadRequest();
+                throw;
+            }
+
         }
 
         [HttpGet("{guid}", Name = "QuizById")]
         [Authorize(AuthenticationSchemes = AuthSchemes, Roles = "Admin")]
-        public async Task<Quiz_DTO> QuizById(string guid)
+        public async Task<ActionResult<Quiz_DTO>> QuizById(string guid)
         {
-            Quiz_DTO quiz_DTO = new Quiz_DTO();
-            Quiz quiz = await quizRepo.GetQuizQuestionsAnswersAsync(Guid.Parse(guid));
-            quiz_DTO = Mapper.ConvertTo_DTO(quiz, ref quiz_DTO);
-            return quiz_DTO;
+            try
+            {
+                Quiz_DTO quiz_DTO = new Quiz_DTO();
+                Quiz quiz = await quizRepo.GetQuizQuestionsAnswersAsync(Guid.Parse(guid));
+                if (quiz == null)
+                {
+                    return NotFound();
+                }
+                quiz_DTO = Mapper.ConvertTo_DTO(quiz, ref quiz_DTO);
+                return Ok(quiz_DTO);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Wrong id");
+                throw;
+            }
+            
+        }
+        [HttpGet("answer/{guid}", Name = "AnswerById")]
+        [Authorize(AuthenticationSchemes = AuthSchemes, Roles = "Admin")]
+        public async Task<ActionResult<Quiz_DTO>> AnswerById(string guid)
+        {
+            try
+            {
+                List<Answers_DTO> answer_DTO = new List<Answers_DTO>();
+                IEnumerable<Answer> answers = await answerRepository.GetAnswersByQuestionAsync(Guid.Parse(guid));
+                if (answers == null)
+                {
+                    return NotFound();
+                }
+                answer_DTO = Mapper.ConvertTo_DTO(answers, ref answer_DTO);
+                return Ok(answer_DTO);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Wrong id");
+                throw;
+            }
+
         }
 
-       
 
-        // POST: api/Quiz
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
 
-        // PUT: api/Quiz/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

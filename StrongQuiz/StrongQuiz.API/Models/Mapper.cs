@@ -18,38 +18,53 @@ namespace StrongQuiz.API.Models
             quiz_DTO.Difficulty = quiz.Difficulty.ToString();
             quiz_DTO.Name = quiz.Name;
             quiz_DTO.Description = quiz.Description;
-            List<string> questions = new List<string>();
-            foreach(var item in quiz.Questions)
+            List<Question_DTO> questions = new List<Question_DTO>();
+            foreach(var question in quiz.Questions)
             {
-                
-                questions.Add(item.QuestionName);
-
-            }
-            /*//uitvlakken van navigatieproperties + controleren op null
-            if (edu.Roles != null && edu.Roles.Count > 0)
-            {
-                foreach (var role in edu.Roles)
+                Question_DTO question_DTO = new Question_DTO();
+                List<Answers_DTO> answers_DTOs = new List<Answers_DTO>();
+                foreach(var answer in question.Answers)
                 {
-                    if (role.UserRoles != null && role.UserRoles.Count > 0)
-                    //indien niet included in SQL response of leeg
+                    Answers_DTO answers_DTO = new Answers_DTO()
                     {
-                        foreach (var pe in role.UserRoles)
-                        {
-
-                            //object ref not set error ->edu properties default aanmaken (new List)
-                            edu_DTO.Users.Add(pe.User.UserName);
-                        }
-                    }
+                        AnswerName = answer.AnswerName,
+                        Correct = answer.Correct.ToString()
+                    };
+                    answers_DTOs.Add(answers_DTO);
                 }
+                question_DTO.Answers = answers_DTOs;
+                question_DTO.QuestionName = question.QuestionName;
+                questions.Add(question_DTO);
             }
-            else
-            {
-                // nullvalue handling gedrag bij Count == 0
-                edu_DTO.Users = null;
-
-            }
-            */
+            quiz_DTO.Questions = questions;
             return quiz_DTO;
         }
+        public static Question_DTO ConvertTo_DTO(Question question, ref Question_DTO question_DTO)
+        {
+            question_DTO.QuestionName = question.QuestionName;
+            List<Answers_DTO> answers_DTOs = new List<Answers_DTO>();
+            foreach(var answer in question.Answers)
+            {
+                Answers_DTO answers_DTO = new Answers_DTO();
+                answers_DTO.AnswerName = answer.AnswerName;
+                answers_DTO.Correct = answer.Correct.ToString();
+                answers_DTOs.Add(answers_DTO);
+            }
+            question_DTO.Answers = answers_DTOs;
+            return question_DTO;
+        }
+        public static List<Answers_DTO> ConvertTo_DTO(IEnumerable<Answer> answers, ref List<Answers_DTO> answer_DTO)
+        {
+            foreach(var answer in answers)
+            {
+                Answers_DTO answerinstance = new Answers_DTO();
+                answerinstance.AnswerName = answer.AnswerName;
+                answerinstance.Correct = answer.Correct.ToString();
+                answer_DTO.Add(answerinstance);
+            }
+
+            return answer_DTO;
+        }
+
     }
 }

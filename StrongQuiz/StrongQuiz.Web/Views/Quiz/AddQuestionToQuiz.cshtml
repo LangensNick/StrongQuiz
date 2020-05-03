@@ -1,43 +1,56 @@
-﻿@model ICollection<StrongQuiz.Models.Models.Question>
+﻿@model StrongQuiz.Models.ViewModel.AddQuestionsWithQuiz
 @{
     var counter = 0;
 }
 <h4>Question</h4>
 <hr />
 <div class="row">
-    <form asp-action="AddQuestionToQuiz" enctype="multipart/form-data">   
-
+    <form asp-action="AddQuestionToQuiz" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        @foreach (var item in Model)
+        @for (var index = 0; index < Model.questions.Count; index++)
         {
-            <input type="type" asp-for="@item.Quiz" name="name" hidden value="@ViewBag.QuizId" />
+            <input asp-for="@Model.quiz.Above75Quote" style="display:none;" value="@Model.quiz.Above75Quote" />
+            <input asp-for="@Model.quiz.Below50Quote" style="display:none;" value="@Model.quiz.Below50Quote" />
+            <input asp-for="@Model.quiz.Below75Quote" style="display:none;" value="@Model.quiz.Below75Quote" />
+            <input asp-for="@Model.quiz.Description" style="display:none;" value="@Model.quiz.Description" />
+            <input asp-for="@Model.quiz.Id" style="display:none;" value="@Model.quiz.Id" />
+            <input asp-for="@Model.quiz.Name" style="display:none;" value="@Model.quiz.Name" />
+            <input asp-for="@Model.quiz.Difficulty" style="display:none;" value="@Model.quiz.Difficulty" />
+            <input asp-for="@Model.quiz.QuestionCount" style="display:none;" value="@Model.quiz.QuestionCount" />
+
+
+            <input asp-for="@Model.questions[index].QuizId" style="display:none;" value="@ViewBag.QuizId" />
+            <input asp-for="@Model.questions[index].QuestionID" style="display:none;" value="@Model.questions[index].QuestionID" />
 
             <div class="container mb-5">
                 <div class="row">
 
                     <div class="w-100 ml-3">
-                        <label asp-for="@item.QuestionName" class="control-label"></label>
-                        <input asp-for="@item.QuestionName" class="form-control" />
-                        <span asp-validation-for="@item.QuestionName" class="text-danger"></span>
+                        <label asp-for="@Model.questions[index].QuestionName" class="control-label"></label>
+                        <input asp-for="@Model.questions[index].QuestionName" class="form-control" />
+                        <span asp-validation-for="@Model.questions[index].QuestionName" class="text-danger"></span>
                     </div>
                     <div class="w-100 ml-3">
-                        <label asp-for="@item.QuestionName" class="control-label"></label>
-                        <input name="questionImage" type="file"value="@(item.QuestionName + ".jpg")" data-guid="@item.QuestionID" class="form-control questionImage " />
-                        <input name="imageav" id="@item.QuestionID"  type="text" style="display:none" value="0"/>
-                        <span asp-validation-for="@item.QuestionName" class="text-danger"></span>
+                        <label asp-for="@Model.questions[index].QuestionName" class="control-label"></label>
+                        <input name="questionImage" type="file" data-guid="@Model.questions[index].QuestionID" class="form-control questionImage " />
+                        <input name="imageav" id="@Model.questions[index].QuestionID" type="text" style="display:none" value="0" />
+                        <span asp-validation-for="@Model.questions[index].QuestionName" class="text-danger"></span>
                     </div>
                     @{
-                        foreach (var answer in item.Answers)
+                        for (var answerindex = 0; answerindex < @Model.questions[index].Answers.Count; answerindex++)
                         {
                             <div class="col">
-                                <label asp-for="@answer.AnswerName" class="control-label"></label>
-                                <input asp-for="@answer.AnswerName" class="form-control" />
-                                <span asp-validation-for="@answer.AnswerName" class="text-danger"></span>
+                                <label class="control-label">Answer</label>
+                                <input asp-for="@Model.questions[index].Answers[answerindex].AnswerId" value="@Guid.NewGuid()" style="display:none;" />
+                                <input asp-for="@Model.questions[index].Answers[answerindex].QuestionId" value="@Model.questions[index].QuestionID" style="display:none;" />
+                                <input asp-for="@Model.questions[index].Answers[answerindex].AnswerName" class="form-control" />
+                                <input asp-for="@Model.questions[index].Answers[answerindex].QuestionId" style="display:none" value="@Model.questions[index].QuestionID" />
+                                <span asp-validation-for="@Model.questions[index].Answers[answerindex].AnswerName" class="text-danger"></span>
 
-                                <select asp-for="@answer.Correct" asp-items="Html.GetEnumSelectList<Answer.State>()">
+                                <select asp-for="@Model.questions[index].Answers[answerindex].Correct" asp-items="Html.GetEnumSelectList<Answer.State>()">
                                     <option>-- Is de vraag correct --</option>
                                 </select>
-                                <span asp-validation-for="@answer.Correct" class="text-danger"></span>
+                                <span asp-validation-for="@Model.questions[index].Answers[answerindex].Correct" class="text-danger"></span>
                             </div>
                             if (counter == 1)
                             {
@@ -55,12 +68,15 @@
                 </div>
 
             </div>
+
         }
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
-    </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
     </form>
-    </div>
+
+
+</div>
 </div>
 
 <div>

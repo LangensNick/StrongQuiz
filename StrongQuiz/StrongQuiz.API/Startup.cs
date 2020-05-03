@@ -37,7 +37,10 @@ namespace StrongQuiz.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IUserScoreRepositories, UserScoreRepositories>();
+            services.AddScoped<IQuestionRepository, QuestionRepository>();
+            services.AddScoped<IAnswerRepository, AnswerRepository>();
             services.AddScoped<IQuizRepository, QuizRepository>();
+            services.AddCors();
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<StrongQuizDbContext>();
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -103,7 +106,7 @@ namespace StrongQuiz.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors(cfg => { cfg.AllowAnyHeader().AllowAnyMethod(); });
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

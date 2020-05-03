@@ -2,4 +2,7 @@
 @*
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
-<a asp-action="StartQuiz" asp-route-QuizId="@Model.Id">Start the quiz</a>
+
+<h1>@Model.Name</h1>
+<h3>@Model.Description</h3>
+<a asp-action="StartQuiz" class="btn-card" asp-route-QuizId="@Model.Id">Start the quiz</a>

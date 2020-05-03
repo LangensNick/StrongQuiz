@@ -9,7 +9,7 @@ namespace StrongQuiz.Models.Repositories
     {
         Task<Quiz> Add(Quiz quiz);
         Task<Quiz> GetQuizByIdAsync(Guid Key);
-        Task<IEnumerable<Quiz>> GetQuizzesAsync();
+        Task<ICollection<Quiz>> GetQuizzesAsync();
         Task<Quiz> GetQuizQuestionsAnswersAsync(Guid Key);
     }
 }

@@ -10,6 +10,7 @@ namespace StrongQuiz.Models.Models
     {
         [Key]
         public Guid AnswerId { get; set; }
+        [Required]
         public string AnswerName { get; set; }
         public enum State
         {

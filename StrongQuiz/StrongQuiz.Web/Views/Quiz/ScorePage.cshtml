@@ -5,13 +5,12 @@
 
 
 <div class="container">
-    <p class="p-score" style="border:2px solid">@Model.Score / @Model.MaxScore</p>
-    <p class="p-score">
-        @Model.Comment</pclass="p-score">
+    <p class="p-score" >@Model.Score / @Model.MaxScore</p>
+    
 
     <div class="containers quiz">
         <div class="container-quiz" id="quiz">
-            <h1>Quiz</h1>
+            <h1 style="font-size:1.5;">@Model.Comment</h1>
             <form asp-action="SubmitQuiz">
                 <hr style="margin-bottom: 20px">
 

@@ -44,7 +44,7 @@ namespace StrongQuiz.Web
             services.AddAuthorization(options => { options.AddPolicy("SuperUsersRole", policy => policy.RequireRole("Administrator", "COördinator")); });
             services.AddRazorPages();
             services.Configure<IdentityOptions>(options => { options.Password.RequiredLength = 8; options.User.RequireUniqueEmail = true; options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30); });
-            services.ConfigureApplicationCookie(options => { options.Cookie.HttpOnly = true; options.ExpireTimeSpan = TimeSpan.FromMinutes(30); });
+            services.ConfigureApplicationCookie(options => { options.Cookie.HttpOnly = true; options.ExpireTimeSpan = TimeSpan.FromMinutes(120); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

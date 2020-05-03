@@ -15,12 +15,13 @@ namespace StrongQuiz.Models.Models
         {
             get { return $"/images/{this.QuestionID}.jpg"; }
         }
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "First name is limited to 50 characters in length.")]
+        [StringLength(100, MinimumLength = 2, ErrorMessage = "The question is limited to 50 characters in length.")]
+        [Required]
         public string? QuestionName { get; set; }
         [NotMapped]
         public bool modify { get; set; } = false;
         public Guid QuizId { get; set; }
-        public virtual ICollection<Answer> Answers { get; set; }
+        public virtual IList<Answer> Answers { get; set; }
         public virtual Quiz Quiz { get; set; }
     }
 }

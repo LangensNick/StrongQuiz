@@ -1,4 +1,4 @@
-﻿@model ICollection<StrongQuiz.Models.Models.Quiz>
+﻿@model ICollection<StrongQuiz.Models.ViewModel.QuizOverview_VM>
 @{
     ViewData["Title"] = "MyQuiz";
 }
@@ -13,14 +13,24 @@
                     <div class="card-content">
                         <div class="card-img">
                             <img src="@item.ImageUrl" alt="">
-                            <span><h4>New!</h4></span>
+                            @{
+                                if (!item.QuizzedTaken)
+                                {
+                                    <span><h4>New!</h4></span>
+
+                                };
+
+                            }
+
                         </div>
+
                         <div class="card-desc">
                             <h3>@item.Name</h3>
+                            <h3>@item.Difficulty</h3>
                             <p>
                                 @item.Description
                             </p>
-                            <a asp-action="Participate" asp-route-QuizId="@item.Id" class="btn-card" asp->Start</a>
+                            <a asp-action="Participate" asp-route-QuizId="@item.QuizId" class="btn-card" asp->Start</a>
                         </div>
                     </div>
                 </div>
