@@ -19,6 +19,25 @@ namespace StrongQuiz.Models.Repositories
             this._context = strongQuizDbContext;
         }
         public async Task<IEnumerable<UserScore>> GetUserScoreAsync() => await _context.UserScores.ToListAsync<UserScore>();
+        public async Task<IEnumerable<UserScore>> GetUserQuizzesAsync(string guid)
+        {
+            var result = await _context.UserScores.Include(e => e.ApplicationUser)
+                           .GroupBy(e => new { e.QuizId, e.ApplicationUserId, e.MaxScore })
+                           .Select(e => new { Score = e.Max(x => x.Score), User = e.Key.ApplicationUserId, maxScore = e.Key.MaxScore, quiz = e.Key.QuizId }).Where(e => e.User == guid)
+                           .OrderByDescending(e => e.Score)
+                           .ToDictionaryAsync(e => new UserScore { Score = e.Score, ApplicationUserId = e.User, MaxScore = e.maxScore });
+            List<UserScore> userScores = new List<UserScore>();
+            foreach (var item in result)
+            {
+                UserScore userScore = new UserScore()
+                {
+                    QuizId = item.Value.quiz
+                };
+                userScores.Add(userScore);
+            }
+            return userScores;
+        }
+
         public async Task<int> GetTimesTakenForEachQuiz(Guid guid)
         {
             var result = _context.UserScores

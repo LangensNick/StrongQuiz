@@ -10,6 +10,7 @@ namespace StrongQuiz.Models.Repositories
     {
         Task<UserScore> Add(UserScore userScore);
         Task<int> GetTimesTakenForEachQuiz(Guid guid);
+        Task<IEnumerable<UserScore>> GetUserQuizzesAsync(string guid);
         Task<IEnumerable<UserScore>> GetUserScoreAsync();
         Task<IEnumerable<UserScore>> GetUserScoreWithUserAsync(Guid quizId);
     }

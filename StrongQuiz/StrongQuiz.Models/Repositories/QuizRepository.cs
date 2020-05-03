@@ -17,7 +17,8 @@ namespace StrongQuiz.Models.Repositories
         {
             this._context = strongQuizDbContext;
         }
-        public async Task<IEnumerable<Quiz>> GetQuizzesAsync() => await _context.Quizzes.ToListAsync<Quiz>();
+        public async Task<ICollection<Quiz>> GetQuizzesAsync() => await _context.Quizzes.ToListAsync<Quiz>();
+
         public async Task<Quiz> GetQuizByIdAsync(Guid Key) => await _context.Quizzes.FindAsync(Key);
         public async Task<Quiz> GetQuizQuestionsAnswersAsync(Guid Key)
         {

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using RestSharp;
 using StrongQuiz.Models.Models;
 using StrongQuiz.Models.Repositories;
 using StrongQuiz.Models.ViewModel;
@@ -44,62 +45,104 @@ namespace StrongQuiz.Web.Controllers
         public async Task<ActionResult> MyQuiz()
         {
             var Quizzes = await quizRepository.GetQuizzesAsync();
-            return View(Quizzes);
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+            var participated = await userScoreRepo.GetUserQuizzesAsync(user.Id);
+            List<Guid> pp = new List<Guid>();
+
+            foreach (var quizTaken in participated)
+            {
+                pp.Add(quizTaken.QuizId);
+            }
+            List<QuizOverview_VM> quizOverview = new List<QuizOverview_VM>();
+            foreach(var quiz in Quizzes)
+            {
+                QuizOverview_VM quizOverview_VM = new QuizOverview_VM()
+                {
+                    QuizId = quiz.Id,
+                    Description = quiz.Description,
+                    Name = quiz.Name,
+                    QuizzedTaken = pp.Contains(quiz.Id),
+                    Difficulty = quiz.Difficulty.ToString()
+                };
+                quizOverview.Add(quizOverview_VM);
+            }
+            return View(quizOverview);
         }
         [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> Participate(string QuizId)
         {
             Quiz quiz = await quizRepository.GetQuizByIdAsync(Guid.Parse(QuizId));
+            if(quiz == null)
+            {
+                return Redirect("/Error/404");
+            }
             return View(quiz);
         }
         [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> Leaderboard(string QuizId)
         {
-            IEnumerable<UserScore> leaderboard = await userScoreRepo.GetUserScoreWithUserAsync(Guid.Parse(QuizId));
-            List<Leaderboard_VM> leaderboard_VMs = new List<Leaderboard_VM>();
-
-            foreach(var item in leaderboard)
+            try
             {
-                var users = userManager.Users.Where(x => x.Id == item.ApplicationUserId);
-                var username = "";
-                foreach(var user in users)
+                IEnumerable<UserScore> leaderboard = await userScoreRepo.GetUserScoreWithUserAsync(Guid.Parse(QuizId));
+                if(leaderboard == null || leaderboard.Count() == 0)
                 {
-                    username = user.UserName;
+                    return Redirect("/Error/400");
                 }
-                Leaderboard_VM leaderboard_VM = new Leaderboard_VM()
-                {
-                    Username = username,
-                    Score = item.Score,
-                    MaxScore = item.MaxScore
-                };
-                leaderboard_VMs.Add(leaderboard_VM);
+                List<Leaderboard_VM> leaderboard_VMs = new List<Leaderboard_VM>();
 
+                foreach (var item in leaderboard)
+                {
+                    var users = userManager.Users.Where(x => x.Id == item.ApplicationUserId);
+                    var username = "";
+                    foreach (var user in users)
+                    {
+                        username = user.UserName;
+                    }
+                    Leaderboard_VM leaderboard_VM = new Leaderboard_VM()
+                    {
+                        Username = username,
+                        Score = item.Score,
+                        MaxScore = item.MaxScore
+                    };
+                    leaderboard_VMs.Add(leaderboard_VM);
+
+                }
+                return View("Leaderboard", leaderboard_VMs);
             }
-            return View("Leaderboard", leaderboard_VMs);
+            catch (Exception ex)
+            {
+                return Redirect("/Error/400");
+                throw;
+            }
+            
         }
 
         [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> StartQuiz(string QuizId)
         {
-            Quiz quiz = await quizRepository.GetQuizQuestionsAnswersAsync(Guid.Parse(QuizId));
-            foreach(var question in quiz.Questions)
+            try
             {
-                question.modify = true;
+                Guid quizGuid = Guid.Parse(QuizId);
+                Quiz quiz = await quizRepository.GetQuizQuestionsAnswersAsync(quizGuid);
+                if (quiz == null)
+                {
+                    return Redirect("/Error/404");
+                }
+                foreach (var question in quiz.Questions)
+                {
+                    question.modify = true;
+                }
+
+                return View(quiz);
             }
-
-            return View(quiz);
+            catch (Exception)
+            {
+                return Redirect("/Error/400");
+                throw;
+            }
+            
         }
-        // GET: Quiz/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: Quiz/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+        
 
         // POST: Quiz/Create
         [HttpPost]
@@ -112,6 +155,7 @@ namespace StrongQuiz.Web.Controllers
             {
                 Guid QuizQuid = Guid.NewGuid();
                 var uploadPath = Path.Combine(he.WebRootPath, "images");
+                    HttpCookie StudentCookies = new HttpCookie() { Comment = "halloooootjes" };
                 if(image1 != null)
                 {
                     if (image1.Length > 0)
@@ -123,8 +167,9 @@ namespace StrongQuiz.Web.Controllers
                         }
                     }
                 }
-                quiz.Id = QuizQuid;
-                await quizRepository.Add(quiz);
+
+                        quiz.Id = QuizQuid;
+
                 IList<Question> questions = new List<Question>();
                 for (var i = 0; i < quiz.QuestionCount; i++)
                 {
@@ -141,7 +186,8 @@ namespace StrongQuiz.Web.Controllers
                 }
                 
                 ViewBag.QuizId = quiz.Id;
-                return View("AddQuestionToQuiz", questions);
+                AddQuestionsWithQuiz addQuestionsWithQuiz = new AddQuestionsWithQuiz() { quiz = quiz, questions = questions };
+                return View("AddQuestionToQuiz", addQuestionsWithQuiz);
             }
             catch (Exception exc)
             {
@@ -157,13 +203,15 @@ namespace StrongQuiz.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddQuestionToQuiz(ICollection<Question> questions, IFormCollection collection, List<IFormFile> questionImage,List<string> imageav)
+        public async Task<ActionResult> AddQuestionToQuiz(Quiz quiz,ICollection<Question> questions, IFormCollection collection, List<IFormFile> questionImage,List<string> imageav)
         {
             try
             {
                 int imageCounter = 0;
                 int i = 0;
                 var uploadPath = Path.Combine(he.WebRootPath, "images");
+                await quizRepository.Add(quiz);
+
                 foreach (var question in questions)
                 {
                     await questionRepository.Add(question);
@@ -183,18 +231,61 @@ namespace StrongQuiz.Web.Controllers
                     }
                     i++;
                 }
-                var quizzes = await quizRepository.GetQuizzesAsync();
-                return View("MyQuiz",quizzes);
+                ICollection<Quiz> quizzes = await quizRepository.GetQuizzesAsync();
+                var Quizzes = await quizRepository.GetQuizzesAsync();
+                var user = await userManager.FindByNameAsync(User.Identity.Name);
+                var participated = await userScoreRepo.GetUserQuizzesAsync(user.Id);
+                List<Guid> pp = new List<Guid>();
+
+                foreach (var quizTaken in participated)
+                {
+                    pp.Add(quizTaken.QuizId);
+                }
+                List<QuizOverview_VM> quizOverview = new List<QuizOverview_VM>();
+                foreach (var quizs in Quizzes)
+                {
+                    QuizOverview_VM quizOverview_VM = new QuizOverview_VM()
+                    {
+                        QuizId = quizs.Id,
+                        Description = quizs.Description,
+                        Name = quizs.Name,
+                        QuizzedTaken = pp.Contains(quizs.Id),
+                        Difficulty = quiz.Difficulty.ToString()
+                    };
+                    quizOverview.Add(quizOverview_VM);
+                }
+                return View("MyQuiz", quizOverview);
             }
             catch (Exception exc)
             {
-                return View("MyQuiz");
+                var Quizzes = await quizRepository.GetQuizzesAsync();
+                var user = await userManager.FindByNameAsync(User.Identity.Name);
+                var participated = await userScoreRepo.GetUserQuizzesAsync(user.Id);
+                List<Guid> pp = new List<Guid>();
+
+                foreach (var quizTaken in participated)
+                {
+                    pp.Add(quizTaken.QuizId);
+                }
+                List<QuizOverview_VM> quizOverview = new List<QuizOverview_VM>();
+                foreach (var quizs in Quizzes)
+                {
+                    QuizOverview_VM quizOverview_VM = new QuizOverview_VM()
+                    {
+                        QuizId = quizs.Id,
+                        Description = quizs.Description,
+                        Name = quizs.Name,
+                        QuizzedTaken = pp.Contains(quizs.Id)
+                    };
+                    quizOverview.Add(quizOverview_VM);
+                }
+                return View("MyQuiz", quizOverview);
             }
         }
         // GET: Quiz/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> SubmitQuiz(ICollection<Question> questions,IFormCollection collection)
+        public async Task<ActionResult> SubmitQuiz(IFormCollection collection)
         {
             var user = userManager.FindByNameAsync(User.Identity.Name).Result;
             List<Question> Correction = new List<Question>();
@@ -205,10 +296,8 @@ namespace StrongQuiz.Web.Controllers
             {
                 Question questionForCorrection = await questionRepository.GetQuestionsAndAnswersAsync(Guid.Parse(question));
                 questionForCorrection.modify = false;
-                var questionid = question;
-                var question1 = await answerRepository.GetAnswersByQuestionAsync(Guid.Parse(questionid));
-                var answer = collection[questionid].ToString();
-                ILookup<bool, Answer> CorrectAnswers = question1.ToLookup(p => p.Correct == Answer.State.correct);
+                var answer = collection[question].ToString();
+                ILookup<bool, Answer> CorrectAnswers = questionForCorrection.Answers.ToLookup(p => p.Correct == Answer.State.correct);
                 foreach (var correctanswer in CorrectAnswers[true])
                 {
                     if (correctanswer.AnswerName == answer)
@@ -257,10 +346,7 @@ namespace StrongQuiz.Web.Controllers
                 return View("MyQuiz");
             }
         }
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+       
 
         // POST: Quiz/Edit/5
         [HttpPost]
